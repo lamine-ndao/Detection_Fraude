@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 style="font-size: 40px; color:#00bcd4;">Bienvenue sur la page d'accueil</h1>
+<p>Déposez vos fichiers pour détecter la fraude.</p>
+{% if predictions %}
+  <table>
+    <thead>
+      <tr>
+        <th>SNo.</th>
+        <th>TransactionID</th>
+        <th>Probabilité + Alerte</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for value in predictions %}
+      <tr>
+        <td>{{ loop.index }}</td>
+        <td>{{ value[0]|int }}</td>
+        <td>
+          {{ value[1] }}
+          {% if value[1] > 0.5 %}
+            <span style="color: red; font-weight: bold;">🔴</span>
+          {% else %}
+            <span style="color: green; font-weight: bold;">🟢</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <div style="margin-top: 20px; font-size: 16px;">
+    🟢 : Faible risque &nbsp;&nbsp; 🔴 : Risque élevé
+  </div>
+{% else %}
+  <p>Les fichiers importés doivent contenir moins de 500 lignes.</p>
+{% endif %}
+{% endblock %}

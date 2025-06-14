@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Prédiction - Détection de Fraude</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo.png') }}">
+</head>
+<body class="predict-page">
+
+    <header>
+        <div class="logo">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" />
+            <h1>FraudGuard</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/" class="{% if page == 'index' %}active{% endif %}">Accueil</a></li>
+                <li><a href="/predict" class="{% if page == 'predict' %}active{% endif %}">Prédiction</a></li>
+                <li><a href="/dashboard" class="{% if page == 'dashboard' %}active{% endif %}">Dashboard</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="content">
+            <h2>Lancer une Prédiction de Fraude</h2>
+            <form method="POST" enctype="multipart/form-data" class="upload-form">
+                <label for="merged-file">Fichier fusionné :</label>
+                <input type="file" name="merged-file" accept=".csv"><br>
+
+                <p><strong>OU</strong></p>
+
+                <label for="transaction-file">Fichier transaction :</label>
+                <input type="file" name="transaction-file" accept=".csv"><br>
+
+                <label for="identity-file">Fichier identité :</label>
+                <input type="file" name="identity-file" accept=".csv"><br>
+
+                <button type="submit">Prédire</button>
+            </form>
+
+            {% if predictions %}
+            <h3>Résultats :</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>TransactionID</th>
+                        <th>Probabilité de Fraude</th>
+                        <th>Risque</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in predictions.values %}
+                    <tr>
+                        <td>{{ row[0] }}</td>
+                        <td>{{ row[1] }}</td>
+                        <td>
+                            {% if row[1] >= 0.5 %}
+                                <span style="color:red; font-weight:bold;">Élevé</span>
+                            {% else %}
+                                <span style="color:green; font-weight:bold;">Faible</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 FraudGuard - Tous droits réservés.</p>
+    </footer>
+
+</body>
+</html>

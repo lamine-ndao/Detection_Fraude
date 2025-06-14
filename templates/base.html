@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="fr">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="{{ url_for('static', filename='css/images/logo.png') }}" type="image/png" />
+  <title>{{ title }}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Text&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body class="{{ page_class }}">
+  <nav id="top-menu">
+    <ul>
+      <li><a href="{{ url_for('index') }}" class="{{ 'active' if page == 'index' else '' }}">Accueil</a></li>
+      <li><a href="{{ url_for('dashboard') }}" class="{{ 'active' if page == 'dashboard' else '' }}">Dashboard</a></li>
+      <li><a href="{{ url_for('stats') }}" class="{{ 'active' if page == 'stats' else '' }}">Statistiques</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <div id="sidebar">
+      <img src="{{ url_for('static', filename='css/images/logo.png') }}" alt="Logo" style="width:100px; margin:auto; display:block; margin-top: 10px;" />
+      <h1 style="text-align:center; font-size:30px; margin-top:20px;">Format des fichiers</h1>
+      <ul style="font-size: 18px; margin-bottom: -3px;">
+        <li>Les fichiers doivent être au format CSV avec les entêtes.</li><br />
+        <li>Transaction et identité peuvent être importés séparément.</li><br />
+        <li>Ou un fichier déjà mergé.</li><br />
+      </ul>
+      <div id="non-merged">
+        <span id="click-non-merged" onclick="makeNonMergedVisible();">Ajouter les fichiers non mergés</span>
+        <form action="/" method="POST" enctype="multipart/form-data" id="form-non-merged" style="margin-top: 5px;">
+          <label for="transaction-file">Fichier transaction</label>
+          <input type="file" name="transaction-file" required />
+          <label for="identity-file">Fichier identité</label>
+          <input type="file" name="identity-file" required />
+          <button type="submit">Prédire</button>
+        </form>
+      </div>
+      <div id="merged" style="margin-top: 15px;">
+        <span id="click-merged" onclick="makeMergedVisible();">Ajouter le fichier mergé</span>
+        <form action="/" method="POST" enctype="multipart/form-data" id="form-merged" style="margin-top: 5px;">
+          <label for="merged-file">Fichier mergé</label>
+          <input type="file" name="merged-file" required />
+          <button type="submit">Prédire</button>
+        </form>
+      </div>
+
+      <div id="about" style="margin-top: auto; padding-bottom: 20px;">
+        <hr style="border-color: gray" />
+        <div style="border: 1px solid gray; padding: 6px; text-align: center; color:#00e3e3;">
+          <a href="https://www.kaggle.com/c/ieee-fraud-detection/overview" target="_blank" style="color: #00e3e3;">Challenge IEEE</a><br /><br />
+          Contributeurs : DIACK & NDAO & NGOM & SARR
+        </div>
+      </div>
+    </div>
+
+    <div id="dashboard">
+      {% block content %}
+      {% endblock %}
+    </div>
+  </main>
+
+  <script>
+    function makeNonMergedVisible() {
+      document.getElementById('form-non-merged').style.display = 'block';
+      document.getElementById('form-merged').style.display = 'none';
+    }
+    function makeMergedVisible() {
+      document.getElementById('form-merged').style.display = 'block';
+      document.getElementById('form-non-merged').style.display = 'none';
+    }
+    // Initial state
+    makeNonMergedVisible();
+  </script>
+</body>
+</html>

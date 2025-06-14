@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 style="font-size: 40px; color:#ff6f61;">Dashboard des statistiques</h1>
+<p>Nombre total de transactions : <strong>{{ total_transactions }}</strong></p>
+<p>Nombre de fraudes détectées : <strong>{{ fraud_count }}</strong></p>
+<!-- Ici tu peux rajouter des graphiques -->
+<h1 style="font-size: 40px; color:#ff6f61;">Dashboard des statistiques</h1>
+<p>Nombre total de transactions : <strong>{{ total_transactions }}</strong></p>
+<p>Nombre de fraudes détectées : <strong>{{ fraud_count }}</strong></p>
+
+<!-- Graphique -->
+<canvas id="fraudChart" width="600" height="300"></canvas>
+
+<script>
+  const rawScores = {{ scores | safe }};
+  const buckets = new Array(10).fill(0);
+  
+  rawScores.forEach(score => {
+    const index = Math.min(Math.floor(score * 10), 9);
+    buckets[index]++;
+  });
+
+  const ctx = document.getElementById('fraudChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['0-0.1','0.1-0.2','0.2-0.3','0.3-0.4','0.4-0.5','0.5-0.6','0.6-0.7','0.7-0.8','0.8-0.9','0.9-1.0'],
+      datasets: [{
+        label: 'Nombre de transactions',
+        data: buckets,
+        backgroundColor: '#00bcd4'
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: context => ` ${context.raw} transactions`
+          }
+        }
+      },
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
+</script>
+
+{% endblock %}
